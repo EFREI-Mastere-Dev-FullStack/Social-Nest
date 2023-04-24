@@ -7,9 +7,10 @@ import { CategoriesModule } from "./categories/categories.module";
 import { PostsModule } from './posts/posts.module';
 import { PicturesModule } from './pictures/pictures.module';
 import { VideosModule } from './videos/videos.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
-  imports: [PrismaModule, UsersModule, CategoriesModule, PostsModule, PicturesModule, VideosModule],
+  imports: [PrismaModule, UsersModule, CategoriesModule, PostsModule, PicturesModule, VideosModule, CommentsModule],
   controllers: [AppController],
   providers: [AppService],
 })
