@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique(map: "IDX_23c05c292c439d77b0de816b50")
+  description String?  @db.Text
+  created_at  DateTime @default(now()) @db.DateTime(6)
+  updated_at  DateTime @default(now()) @db.DateTime(6)
+  post        post[]
+}
+
+model comment {
+  id         Int      @id @default(autoincrement())
+  content    String   @db.Text
+  userId     Int?
+  postId     Int?
+  created_at DateTime @default(now()) @db.DateTime(6)
+  updated_at DateTime @default(now()) @db.DateTime(6)
+  post       post?    @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_94a85bb16d24033a2afdd5df060")
+  user       user?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c0354a9a009d3bb45a08655ce3b")
+  like       like[]
+
+  @@index([postId], map: "IDX_94a85bb16d24033a2afdd5df06")
+  @@index([userId], map: "IDX_c0354a9a009d3bb45a08655ce3")
+}
+
+model follow {
+  followerId                   Int?
+  followeeId                   Int?
+  created_at                   DateTime @default(now()) @db.DateTime(6)
+  follower_id                  Int
+  followee_id                  Int
+  user_follow_followeeIdTouser user?    @relation("follow_followeeIdTouser", fields: [followeeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_38b54e7a93cf8a2f000971a61ed")
+  user_follow_followerIdTouser user?    @relation("follow_followerIdTouser", fields: [followerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_550dce89df9570f251b6af2665a")
+
+  @@id([follower_id, followee_id])
+  @@unique([followerId, followeeId], map: "unique_follow_relationship")
+  @@index([followeeId], map: "IDX_38b54e7a93cf8a2f000971a61e")
+  @@index([followerId], map: "IDX_550dce89df9570f251b6af2665")
+}
+
+model like {
+  id         Int      @id @default(autoincrement())
+  userId     Int?
+  postId     Int?
+  commentId  Int?
+  created_at DateTime @default(now()) @db.DateTime(6)
+  post       post?    @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3acf7c55c319c4000e8056c1279")
+  comment    comment? @relation(fields: [commentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_d86e0a3eeecc21faa0da415a18a")
+  user       user?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_e8fb739f08d47955a39850fac23")
+
+  @@index([postId], map: "IDX_3acf7c55c319c4000e8056c127")
+  @@index([commentId], map: "IDX_d86e0a3eeecc21faa0da415a18")
+  @@index([userId], map: "IDX_e8fb739f08d47955a39850fac2")
+}
+
+model picture {
+  id         Int      @id @default(autoincrement())
+  url        String   @db.VarChar(255)
+  postId     Int?
+  created_at DateTime @default(now()) @db.DateTime(6)
+  post       post?    @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b6d2230f5f6504f8d5b03020284")
+
+  @@index([postId], map: "IDX_b6d2230f5f6504f8d5b0302028")
+}
+
+model post {
+  id         Int       @id @default(autoincrement())
+  title      String
+  content    String    @db.Text
+  thumbnail  String?   @db.VarChar(255)
+  userId     Int?
+  categoryId Int?
+  created_at DateTime  @default(now()) @db.DateTime(6)
+  updated_at DateTime  @default(now()) @db.DateTime(6)
+  comment    comment[]
+  like       like[]
+  picture    picture[]
+  category   category? @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_1077d47e0112cad3c16bbcea6cd")
+  user       user?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5c1cf55c308037b5aca1038a131")
+  video      video[]
+
+  @@index([categoryId], map: "IDX_1077d47e0112cad3c16bbcea6c")
+  @@index([userId], map: "IDX_5c1cf55c308037b5aca1038a13")
+}
+
+model user {
+  id                             Int       @id @default(autoincrement())
+  username                       String
+  email                          String
+  password                       String    @db.VarChar(255)
+  first_name                     String?
+  last_name                      String?
+  bio                            String?   @db.Text
+  profile_picture                String?   @db.VarChar(255)
+  created_at                     DateTime  @default(now()) @db.DateTime(6)
+  updated_at                     DateTime  @default(now()) @db.DateTime(6)
+  comment                        comment[]
+  follow_follow_followeeIdTouser follow[]  @relation("follow_followeeIdTouser")
+  follow_follow_followerIdTouser follow[]  @relation("follow_followerIdTouser")
+  like                           like[]
+  post                           post[]
+
+  @@unique([username, email], map: "IDX_f4ca2c1e7c96ae6e8a7cca9df8")
+}
+
+model video {
+  id         Int      @id @default(autoincrement())
+  url        String   @db.VarChar(255)
+  postId     Int?
+  created_at DateTime @default(now()) @db.DateTime(6)
+  post       post?    @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_a38d033e82b1b0b0e6f7de67aad")
+
+  @@index([postId], map: "IDX_a38d033e82b1b0b0e6f7de67aa")
+}
