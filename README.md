@@ -25,6 +25,16 @@ DATABASE_URL="mysql://username:password@host:port/database"
 $ npx prisma migrate dev
 ```
 
+5. Démarrer l'application
+
+```bash
+$ npm run start
+```
+
+6. Ouvrire la documentation
+
+`http://localhost:3005/api`
+
 ## Running the app
 
 ```bash
