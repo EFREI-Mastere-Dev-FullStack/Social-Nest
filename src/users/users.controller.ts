@@ -31,4 +31,11 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
+
+  @Post(':id_user/follow/:username_follow')
+    followUser(@Param('id_user') id_user: string, @Param('username_follow') username_follow: string) {
+        return this.usersService.followUser(+id_user, username_follow);
+  }
+
+
 }
