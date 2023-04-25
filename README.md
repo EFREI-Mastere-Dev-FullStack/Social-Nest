@@ -5,8 +5,24 @@ Concevoir un réseau social à l'aide du framework NestJS.
 
 ## Installation
 
+1. Installer les dépendences
+
 ```bash
 $ npm install
+```
+
+2. Créer le fichier .env
+
+```ENV
+DATABASE_URL="mysql://username:password@host:port/database"
+```
+
+3. Instancier la base de données
+
+4. Effectuer la première migration
+
+```bash
+$ npx prisma migrate dev
 ```
 
 ## Running the app
@@ -20,12 +36,4 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
-```
-
-## Setup database
-
-Créer le fichier ".env" à la racine du projet et y ajouter les informations de connexion à la base de données.
-
-```ENV
-DATABASE_URL="mysql://username:password@host:port/database"
 ```
